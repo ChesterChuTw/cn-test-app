@@ -1,0 +1,33 @@
+version: '3'
+services:
+  testing-lab-db:
+    image: mongo
+    ports:
+      - "27017:27017"
+    # volumes:
+    #   - ./db:/var/lib/mysql
+
+  testing-lab-backend:
+    build:
+      context: backend
+    ports:
+      - "8888:8888"
+    environment:
+      - MONGO_CONNECTION_STRING=mongodb://testing-lab-db:27017/myMernApp
+    depends_on:
+      - db
+
+  testing-lab-frontend:
+    build:
+      context: frontend
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+      - db
+
+
+    
+    # environment:
+    #   DB_HOST: db
+    

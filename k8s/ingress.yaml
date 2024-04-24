@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: testing-lab-ingress
+spec:
+  rules:
+    - host: "hw.k8s.local"
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: testing-lab-frontend
+                port:
+                  number: 5173
+          # - path: /api
+          #   pathType: Prefix
+          #   backend:
+          #     service:
+          #       name: testing-lab-backend
+          #       port:
+          #         number: 8888

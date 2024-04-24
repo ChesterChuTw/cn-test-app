@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: testing-lab-backend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: testing-lab-backend
+  template:
+    metadata:
+      labels:
+        app: testing-lab-backend
+    spec:
+      containers:
+        - name: testing-lab-backend
+          image: ghcr.io/chesterchutw/testing-lab-backend:latest
+          ports:
+            - containerPort: 8888
+          livenessProbe:
+            tcpSocket:
+              port: 8888
+            initialDelaySeconds: 15  # Delay before liveness probe is initiated
+            periodSeconds: 10        # How often to perform the probe
+            timeoutSeconds: 5        # How long to wait for the probe to timeout
+            failureThreshold: 3      # After how many failures the pod should be restarted
+          resources:
+            requests:
+              cpu: 10m
+              memory: 10Mi
+            limits:
+              cpu: 200m
+              memory: 200Mi
+          env:
+            - name: MONGO_CONNECTION_STRING
+              value: mongodb://testing-lab-db:27017/myMernApp
