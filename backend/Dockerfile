@@ -6,7 +6,7 @@ COPY package.json ./
 COPY package-lock.json ./
 COPY src/ ./
 COPY tsconfig.json ./
-COPY .env ./
+COPY .env.sample ./.env
 
 # Copy the rest of the application source code
 COPY . .
