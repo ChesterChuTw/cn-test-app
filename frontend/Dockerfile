@@ -18,7 +18,7 @@ FROM nginx:stable-alpine as production-stage
 WORKDIR /app
 
 # Copy nginx configuration
-COPY nginx.conf /etc/nginx/conf.d/
+#COPY nginx.conf /etc/nginx/conf.d/
 
 # Copy built assets from build-stage
 COPY --from=BUILDER /app/dist /usr/share/nginx/html
