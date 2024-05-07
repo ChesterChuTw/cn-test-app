@@ -1,0 +1,167 @@
+# db
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: testing-lab-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: testing-lab-db
+  template:
+    metadata:
+      labels:
+        app: testing-lab-db
+    spec:
+      containers:
+        - name: testing-lab-db
+          image: ghcr.io/chesterchutw/testing-lab-db:latest
+          # env:
+          #   - name: MYSQL_ROOT_PASSWORD
+          #     value: root
+          #   - name: MYSQL_DATABASE
+          #     value: app
+          #   - name: MYSQL_USER
+          #     value: app
+          #   - name: MYSQL_PASSWORD
+          #     value: app 
+          ports:
+            - containerPort: 27017
+          # livenessProbe:
+          #   tcpSocket:
+          #     port: 27017
+          #   initialDelaySeconds: 10   # Delay before liveness probe is initiated
+          #   periodSeconds: 5          # How often to perform the probe
+          #   timeoutSeconds: 2         # How long to wait for the probe to timeout
+          #   failureThreshold: 3       # After how many failures the pod should be restarted
+          volumeMounts:
+            - name: mongodb-persistent-storage
+              mountPath: /data/db
+      volumes:
+        - name: mongodb-persistent-storage
+          persistentVolumeClaim:
+            claimName: mongodb-pvc
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mongodb-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+# backend
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: testing-lab-backend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: testing-lab-backend
+  template:
+    metadata:
+      labels:
+        app: testing-lab-backend
+    spec:
+      containers:
+        - name: testing-lab-backend
+          image: ghcr.io/chesterchutw/testing-lab-backend:latest
+          ports:
+            - containerPort: 8888
+          livenessProbe:
+            tcpSocket:
+              port: 8888
+            initialDelaySeconds: 15  # Delay before liveness probe is initiated
+            periodSeconds: 10        # How often to perform the probe
+            timeoutSeconds: 5        # How long to wait for the probe to timeout
+            failureThreshold: 3      # After how many failures the pod should be restarted
+          resources:
+            requests:
+              cpu: 10m
+              memory: 10Mi
+            limits:
+              cpu: 200m
+              memory: 200Mi
+          env:
+            - name: MONGO_CONNECTION_STRING
+              value: mongodb://testing-lab-db:27017/myMernApp
+---
+# frontend
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: testing-lab-frontend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: testing-lab-frontend
+  template:
+    metadata:
+      labels:
+        app: testing-lab-frontend
+    spec:
+      containers:
+        - name: testing-lab-frontend
+          image: ghcr.io/chesterchutw/testing-lab-frontend:latest
+          ports:
+            - containerPort: 5173
+          volumeMounts:
+          - name: config-volume
+            mountPath: /etc/nginx/conf.d/nginx.conf
+            subPath: nginx.conf
+            readOnly: true
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 15  # Delay before liveness probe is initiated
+            periodSeconds: 10        # How often to perform the probe
+            timeoutSeconds: 5        # How long to wait for the probe to timeout
+            successThreshold: 1      # Minimum consecutive successes for the probe to be considered successful
+            failureThreshold: 3      # After how many failures the pod should be restarted
+          resources:
+            requests:
+              cpu: 10m
+              memory: 10Mi
+            limits:
+              cpu: 200m
+              memory: 200Mi
+      volumes:
+      - name: config-volume
+        configMap:
+          name: nginx-config
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-config
+  namespace: default
+data:
+  nginx.conf: |
+    server {
+        listen 5173;
+
+        location / {
+            root /usr/share/nginx/html;
+            try_files $uri $uri/ /index.html;
+        }
+
+        location /api {
+            proxy_pass http://testing-lab-backend:8888; # docker-compose up
+            # proxy_pass http://localhost:8888; # docker run
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection "upgrade";
+            proxy_set_header Host $host;
+            proxy_cache_bypass $http_upgrade;
+        }
+
+        error_log  /var/log/nginx/vue-app-error.log;
+        access_log /var/log/nginx/vue-app-access.log;
+    }

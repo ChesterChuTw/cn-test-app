@@ -4,8 +4,8 @@ metadata:
   name: testing-lab-ingress
 spec:
   rules:
-    - host: "hw.k8s.local"
-      http:
+    #- host: "hw.k8s.local"
+    - http:
         paths:
           - path: /
             pathType: Prefix

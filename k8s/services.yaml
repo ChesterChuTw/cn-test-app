@@ -1,0 +1,41 @@
+# db
+apiVersion: v1
+kind: Service
+metadata:
+  name: testing-lab-db
+spec:
+  type: ClusterIP
+  selector:
+    app: testing-lab-db
+  ports:
+    - protocol: TCP
+      port: 27017
+      targetPort: 27017
+---
+# backend
+apiVersion: v1
+kind: Service
+metadata:
+  name: testing-lab-backend
+spec:
+  type: ClusterIP
+  selector:
+    app: testing-lab-backend
+  ports:
+    - protocol: TCP
+      port: 8888
+      targetPort: 8888
+---
+# frontend
+apiVersion: v1
+kind: Service
+metadata:
+  name: testing-lab-frontend
+spec:
+  type: ClusterIP
+  selector:
+    app: testing-lab-frontend
+  ports:
+    - protocol: TCP
+      port: 5173
+      targetPort: 5173
