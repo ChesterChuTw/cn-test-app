@@ -27,13 +27,13 @@ spec:
           #     value: app 
           ports:
             - containerPort: 27017
-          # livenessProbe:
-          #   tcpSocket:
-          #     port: 27017
-          #   initialDelaySeconds: 10   # Delay before liveness probe is initiated
-          #   periodSeconds: 5          # How often to perform the probe
-          #   timeoutSeconds: 2         # How long to wait for the probe to timeout
-          #   failureThreshold: 3       # After how many failures the pod should be restarted
+          livenessProbe:
+            tcpSocket:
+              port: 27017
+            initialDelaySeconds: 10   # Delay before liveness probe is initiated
+            periodSeconds: 5          # How often to perform the probe
+            timeoutSeconds: 2         # How long to wait for the probe to timeout
+            failureThreshold: 3       # After how many failures the pod should be restarted
           volumeMounts:
             - name: mongodb-persistent-storage
               mountPath: /data/db
