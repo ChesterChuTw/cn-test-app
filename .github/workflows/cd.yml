@@ -8,9 +8,6 @@ name: CD Pipeline
 #       - completed
 
 on:
-  pull_request:
-    branches:
-      - main
   push:
     branches:
       - main
