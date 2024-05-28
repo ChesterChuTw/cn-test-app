@@ -1,4 +1,4 @@
-name: CI/CD Pipeline
+name: CD Pipeline
 
 on:
   push:
@@ -9,16 +9,6 @@ on:
       - main
 
 jobs:
-  ci:
-    name: Run CI Tests and Formatting
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0  # 0: 取得所有紀錄, 1: 僅取得最新紀錄
-
   cd:
     name: Deploy Application
     runs-on: ubuntu-latest
