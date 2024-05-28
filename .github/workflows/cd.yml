@@ -8,10 +8,9 @@ name: CD Pipeline
 #       - completed
 
 on:
-  pull_request:
+  push:
     branches:
       - main
-    types: [completed]
 
 jobs:
   cd:
