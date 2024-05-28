@@ -2,7 +2,7 @@ name: CD Pipeline
 
 on:
   workflow_run:
-    workflows: ["Run Tests"]
+    workflows: ["CI Pipeline"]
     branches: [main]
     types: 
       - completed
