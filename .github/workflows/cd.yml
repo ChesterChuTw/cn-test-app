@@ -1,18 +1,17 @@
 name: CD Pipeline
 
-# on:
-#   workflow_run:
-#     workflows: ["CI Pipeline"]
-#     branches: [main]
-#     types: 
-#       - completed
+on:
+  workflow_run:
+    workflows: ["CI Pipeline"]
+    branches: [main]
+    types: 
+      - completed
 
 on:
-  pull_request:
+  push:
     branches:
       - main
-  merge_group:
-    types: [checks_requested]
+
 jobs:
   cd:
     name: Deploy Application
