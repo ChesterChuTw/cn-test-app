@@ -4,17 +4,30 @@ on:
   workflow_run:
     workflows: ["CI Pipeline"]
     branches: [main]
-    types: 
+    types:
       - completed
 
 jobs:
-  cd:
-    name: Deploy Application
+  docker:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+      steps:
+        - name: Checkout repository
+          uses: actions/checkout@v3
 
-      - name: Notify deployment success
-        run: echo "Deployment successful!"
+        - name: Login to GitHub Container Registry
+          uses: docker/login-action@v3
+          with:
+            registry: ghcr.io
+            username: ${{ github.actor }}
+            password: ${{ secrets.CR_PAT }}
+
+        - name: Set up Docker Buildx
+          uses: docker/setup-buildx-action@v3
+
+        - name: Build and push
+          uses: docker/build-push-action@v5
+          with:
+            context: "backend/Dockerfile"
+            push: true
+            tags: ghcr.io/chesterchutw/testing-lab-frontend:latest
