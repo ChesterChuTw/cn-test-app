@@ -4,6 +4,16 @@
   "printWidth": 120,
   "trailingComma": "none",
   "arrowParens": "always",
-  "parser": "typescript",
-  "bracketSpacing": true
+  "bracketSpacing": true,
+  "overrides": [
+    {
+      "files": [
+        "*.ts",
+        "*.tsx"
+      ],
+      "options": {
+        "parser": "typescript"
+      }
+    }
+  ]
 }
