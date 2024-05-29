@@ -14,6 +14,15 @@
       "options": {
         "parser": "typescript"
       }
+    },
+    {
+      "files": "*.cjs",
+      "options": {
+        "parser": "babel",
+        "printWidth": 80,
+        "bracketSpacing": true,
+        "proseWrap": "always"
+      }
     }
   ]
 }
