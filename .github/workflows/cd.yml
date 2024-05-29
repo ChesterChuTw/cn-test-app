@@ -68,10 +68,26 @@ jobs:
 
       - name: Update image tags in deploys.yaml
         run: |
-          yq eval -i '(.spec.template.spec.containers[] | select(.name == "testing-lab-db") | .image) = "ghcr.io/chesterchutw/testing-lab-db:${{ github.sha }}"' ./k8s/deploys.yaml
           yq eval -i '(.spec.template.spec.containers[] | select(.name == "testing-lab-backend") | .image) = "ghcr.io/chesterchutw/testing-lab-backend:${{ github.sha }}"' ./k8s/deploys.yaml
           yq eval -i '(.spec.template.spec.containers[] | select(.name == "testing-lab-frontend") | .image) = "ghcr.io/chesterchutw/testing-lab-frontend:${{ github.sha }}"' ./k8s/deploys.yaml
 
-      - name: debugging
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v1
+        with:
+          version: "latest"
+
+      - name: Configure kubectl
+        env:
+          KUBECONFIG: ${{ secrets.KUBECONFIG }}
+        run: echo "${KUBECONFIG}" > $HOME/.kube/config
+
+      - name: Debug
         run: |
-          cat ./k8s/deploys.yaml
+          cat $HOME/.kube/config
+          kubectl get pods
+
+      - name: Deploy to Kubernetes
+        run: |
+          kubectl apply -f ./k8s/deploys.yaml
+          kubectl apply -f ./k8s/services.yaml
+          kubectl apply -f ./k8s/ingress.yaml
