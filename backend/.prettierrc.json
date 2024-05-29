@@ -1,0 +1,25 @@
+{
+  "semi": false,
+  "singleQuote": true,
+  "printWidth": 120,
+  "trailingComma": "none",
+  "arrowParens": "always",
+  "bracketSpacing": true,
+  "overrides": [
+    {
+      "files": ["*.ts", "*.tsx"],
+      "options": {
+        "parser": "typescript"
+      }
+    },
+    {
+      "files": "*.cjs",
+      "options": {
+        "parser": "babel",
+        "printWidth": 80,
+        "bracketSpacing": true,
+        "proseWrap": "always"
+      }
+    }
+  ]
+}
