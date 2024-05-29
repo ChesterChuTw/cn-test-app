@@ -7,7 +7,10 @@
   "bracketSpacing": true,
   "overrides": [
     {
-      "files": ["*.ts", "*.tsx"],
+      "files": [
+        "*.ts",
+        "*.tsx"
+      ],
       "options": {
         "parser": "typescript"
       }
