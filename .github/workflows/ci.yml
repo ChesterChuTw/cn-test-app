@@ -50,7 +50,11 @@ jobs:
           node-version: "20"
 
       - name: Generate new coverage report
-        run: node backend/coverage-compare/calculateCoverage.js
+        run: |
+          cd backend
+          npm run test --coverage
+          ls -al ./coverage
+          node ./coverage-compare/calculateCoverage.js
 
       - name: Download old coverage summary if exists
         uses: actions/download-artifact@v2
