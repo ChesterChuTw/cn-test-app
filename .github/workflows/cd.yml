@@ -79,7 +79,9 @@ jobs:
       - name: Configure kubectl
         env:
           KUBECONFIG: ${{ secrets.KUBECONFIG }}
-        run: echo "${KUBECONFIG}" > $HOME/.kube/config
+        run: |
+          mkdir -p $HOME/.kube
+          echo "${KUBECONFIG}" > $HOME/.kube/config
 
       - name: Debug
         run: |
