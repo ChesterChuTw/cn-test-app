@@ -29,7 +29,7 @@ jobs:
         with:
           context: "frontend"
           push: true
-          tags: ghcr.io/chesterchutw/testing-lab-frontend:latest
+          tags: ghcr.io/chesterchutw/testing-lab-frontend:${{ github.sha }}
 
   docker_build_backend:
     runs-on: ubuntu-latest
@@ -52,7 +52,7 @@ jobs:
         with:
           context: "./backend"
           push: true
-          tags: ghcr.io/chesterchutw/testing-lab-backend:latest
+          tags: ghcr.io/chesterchutw/testing-lab-backend:${{ github.sha }}
 
   kubernetes_deploy:
     needs: [docker_build_frontend, docker_build_backend]
@@ -60,3 +60,18 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+
+      - name: Install yq
+        run: |
+          sudo wget https://github.com/mikefarah/yq/releases/download/v4.20.2/yq_linux_amd64 -O /usr/bin/yq
+          sudo chmod +x /usr/bin/yq
+
+      - name: Update image tags in deploys.yaml
+        run: |
+          yq eval -i '(.spec.template.spec.containers[] | select(.name == "testing-lab-db") | .image) = "ghcr.io/chesterchutw/testing-lab-db:${{ github.sha }}"' ./k8s/deploys.yaml
+          yq eval -i '(.spec.template.spec.containers[] | select(.name == "testing-lab-backend") | .image) = "ghcr.io/chesterchutw/testing-lab-backend:${{ github.sha }}"' ./k8s/deploys.yaml
+          yq eval -i '(.spec.template.spec.containers[] | select(.name == "testing-lab-frontend") | .image) = "ghcr.io/chesterchutw/testing-lab-frontend:${{ github.sha }}"' ./k8s/deploys.yaml
+
+      - name: debugging
+        run: |
+          cat ./k8s/deploys.yaml
