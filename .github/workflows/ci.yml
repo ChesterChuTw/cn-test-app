@@ -7,7 +7,7 @@ on:
 
 jobs:
   coverage_check:
-    name: Coverage Check
+    name: Unit Test and Coverage Check
     runs-on: ubuntu-latest
 
     steps:
@@ -21,12 +21,22 @@ jobs:
         with:
           node-version: "20"
 
-      - name: Install dependencies
+      - name: Install dependencies (frontend)
+        run: |
+          cd frontend
+          npm install
+
+      - name: Install dependencies (backend)
         run: |
           cd backend
           npm install
 
-      - name: Generate new coverage report
+      - name: Run unit tests (frontend)
+        run: |
+          cd frontend
+          npm run cy:test
+
+      - name: Run unit tests (backend) and Generate new coverage report
         run: |
           cd backend
           npm run test --coverage
