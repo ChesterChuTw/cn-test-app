@@ -44,8 +44,7 @@ const App = () => {
 
   return (
     <main className="App">
-      <h1 style={{ color: 'orange' }}>
-        My Todos</h1>
+      <h1 style={{ color: 'orange' }}>My Todos</h1>
 
       <AddTodo saveTodo={handleSaveTodo} />
       {todos.map((todo: ITodo) => (
