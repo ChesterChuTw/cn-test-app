@@ -61,31 +61,18 @@ jobs:
           ls -al ./coverage
           node ./coverage-compare/calculateCoverage.js
 
-      - name: Download old coverage summary if exists
-        uses: actions/download-artifact@v4
-        with:
-          name: coverage-summary-old
-          path: backend/coverage-compare/
-        continue-on-error: false
-
       - name: Check and compare coverage
         run: node backend/coverage-compare/checkCoverage.js
 
       - name: Upload coverage summary as old coverage
         if: success()
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage-summary-old
-          path: ./backend/coverage-compare/coverage-summary.json
-
-      - name: Download old coverage summary if exists
-        uses: actions/download-artifact@v4
-        with:
-          name: coverage-summary-old
-          path: backend/coverage/
-        continue-on-error: true
-
-      - name: Debug
         run: |
-          ls -al ./backend/coverage/
-          ls -al ./backend/coverage-compare/
+          cd backend/coverage-compare
+          mv coverage-summary.json coverage-summary-old.json
+          if [ -n "$(git status --porcelain)" ]; then
+            git config --global user.name "ChesterChuTw"
+            git config --global user.email "chester850117@gmail.com"
+            git add .
+            git commit -m "chore: update coverage summary"
+            git push https://${{ secrets.GH_PAT }}@github.com/${{ github.repository }}.git HEAD:${{ github.ref }}
+          fi
