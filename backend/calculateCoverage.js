@@ -51,6 +51,16 @@ fs.readFile(coverageFilePath, 'utf8', (err, data) => {
     const overallFunctionCoverage = (coveredFunctions / totalFunctions) * 100;
     const overallLineCoverage = (coveredLines / totalLines) * 100;
 
+    // console.warn('coveredStatements:', coveredStatements);
+    // console.warn('totalStatements:', totalStatements);
+    // console.warn('coveredBranches:', coveredBranches);
+    // console.warn('totalBranches:', totalBranches);
+    // console.warn('coveredFunctions:', coveredFunctions);
+    // console.warn('totalFunctions:', totalFunctions);
+    // console.warn('coveredLines:', coveredLines);
+    // console.warn('totalLines:', totalLines);
+
+
     console.log(`Overall statement coverage: ${overallStatementCoverage.toFixed(3)}%`);
     console.log(`Overall branch coverage: ${overallBranchCoverage.toFixed(3)}%`);
     console.log(`Overall function coverage: ${overallFunctionCoverage.toFixed(3)}%`);
