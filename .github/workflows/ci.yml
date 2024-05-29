@@ -30,7 +30,6 @@ jobs:
         run: |
           cd backend
           npm run test --coverage
-          ls -al ./coverage
           node ./coverage-compare/calculateCoverage.js
 
       - name: Check and compare coverage
