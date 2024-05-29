@@ -48,6 +48,14 @@ jobs:
             git commit -m "chore: update coverage summary"
             git push https://${{ secrets.GH_PAT }}@github.com/${{ github.repository }}.git HEAD:${{ github.ref }}
           fi
+
+      - name: Upload coverage summary to artifacts for further review
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-summary
+          path: backend/coverage-compare/coverage-summary-old.json
+
   auto_format:
     name: Auto Format
     runs-on: ubuntu-latest
