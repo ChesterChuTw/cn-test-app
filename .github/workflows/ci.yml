@@ -50,8 +50,6 @@ jobs:
           fi
 
       - name: Run Prettier for backend
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
         run: |
           cd backend
           npx prettier --write .
@@ -64,8 +62,6 @@ jobs:
           fi
 
       - name: Run Prettier for frontend
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
         run: |
           cd frontend
           npx prettier --write .

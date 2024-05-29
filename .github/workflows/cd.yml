@@ -59,7 +59,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install yq
         run: |
@@ -71,7 +71,7 @@ jobs:
           yq eval -i 'select(.kind == "Deployment" and .metadata.name == "testing-lab-backend").spec.template.spec.containers[] |= select(.name == "testing-lab-backend").image = "ghcr.io/chesterchutw/testing-lab-backend:${{ github.sha }}"' ./k8s/deploys.yaml
           yq eval -i 'select(.kind == "Deployment" and .metadata.name == "testing-lab-frontend").spec.template.spec.containers[] |= select(.name == "testing-lab-frontend").image = "ghcr.io/chesterchutw/testing-lab-frontend:${{ github.sha }}"' ./k8s/deploys.yaml
       - name: Set up kubectl
-        uses: azure/setup-kubectl@v1
+        uses: azure/setup-kubectl@v3
         with:
           version: "latest"
 
@@ -80,7 +80,7 @@ jobs:
           KUBECONFIG: ${{ secrets.KUBECONFIG }}
         run: |
           mkdir -p $HOME/.kube
-          echo "${KUBECONFIG}" > $HOME/.kube/config
+          echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
 
       - name: Debug
         run: |
