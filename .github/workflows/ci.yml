@@ -71,6 +71,9 @@ jobs:
       - name: Check and compare coverage
         run: node backend/coverage-compare/checkCoverage.js
 
+      - name: List files for debugging
+        run: ls -la backend/coverage
+
       - name: Upload coverage summary as old coverage
         if: success()
         uses: actions/upload-artifact@v2
