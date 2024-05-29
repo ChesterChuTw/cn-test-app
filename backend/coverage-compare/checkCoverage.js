@@ -9,8 +9,6 @@ const newCoverage = JSON.parse(fs.readFileSync(newCoveragePath, 'utf8'))
 
 // Check if old coverage summary exists
 if (!fs.existsSync(oldCoveragePath)) {
-  // Rename the new coverage summary to old coverage summary
-  fs.renameSync(newCoveragePath, oldCoveragePath)
   console.info(
     'Old coverage summary does not exist. Renaming new coverage summary to old coverage summary. Pass without checking.'
   )
