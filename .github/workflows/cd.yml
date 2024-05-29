@@ -83,11 +83,6 @@ jobs:
           mkdir -p $HOME/.kube
           echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
 
-      - name: Debug
-        run: |
-          cat ./k8s/deploys.yaml
-          kubectl get pods
-
       - name: Deploy to Kubernetes
         run: |
           kubectl apply -f ./k8s/deploys.yaml
