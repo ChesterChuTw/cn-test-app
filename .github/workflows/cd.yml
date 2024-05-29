@@ -8,7 +8,7 @@ on:
       - completed
 
 jobs:
-  docker:
+  init:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -24,9 +24,22 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+  docker_build_frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: "frontend"
+          push: true
+          tags: ghcr.io/chesterchutw/testing-lab-frontend:latest
+
+  docker_build_backend:
+    runs-on: ubuntu-latest
+    steps:
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
           context: "backend"
           push: true
-          tags: ghcr.io/chesterchutw/testing-lab-frontend:latest
+          tags: ghcr.io/chesterchutw/testing-lab-backend:latest
