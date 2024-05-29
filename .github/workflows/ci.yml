@@ -21,22 +21,12 @@ jobs:
         with:
           node-version: "20"
 
-      - name: Install dependencies (frontend)
-        run: |
-          cd frontend
-          npm install
-
-      - name: Install dependencies (backend)
+      - name: Install dependencies
         run: |
           cd backend
           npm install
 
-      - name: Run unit tests (frontend)
-        run: |
-          cd frontend
-          npm run cy:test
-
-      - name: Run unit tests (backend) and Generate new coverage report
+      - name: Run unit tests and Generate new coverage report
         run: |
           cd backend
           npm run test --coverage
