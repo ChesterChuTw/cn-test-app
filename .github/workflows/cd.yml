@@ -70,8 +70,9 @@ jobs:
         run: |
           yq eval -i 'select(.kind == "Deployment" and .metadata.name == "testing-lab-backend").spec.template.spec.containers[] |= select(.name == "testing-lab-backend").image = "ghcr.io/chesterchutw/testing-lab-backend:${{ github.sha }}"' ./k8s/deploys.yaml
           yq eval -i 'select(.kind == "Deployment" and .metadata.name == "testing-lab-frontend").spec.template.spec.containers[] |= select(.name == "testing-lab-frontend").image = "ghcr.io/chesterchutw/testing-lab-frontend:${{ github.sha }}"' ./k8s/deploys.yaml
+
       - name: Set up kubectl
-        uses: azure/setup-kubectl@v3
+        uses: azure/setup-kubectl@v4
         with:
           version: "latest"
 
