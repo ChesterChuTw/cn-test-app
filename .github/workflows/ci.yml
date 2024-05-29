@@ -76,4 +76,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: coverage-summary-old
-          path: backend/coverage-compare/coverage-summary.json
+          path: ./backend/coverage-compare/coverage-summary.json
