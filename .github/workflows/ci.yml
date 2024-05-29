@@ -3,7 +3,7 @@ name: CI Pipeline
 on:
   push:
     branches:
-      - '**'
+      - "**"
 
 jobs:
   ci:
@@ -43,3 +43,28 @@ jobs:
             git commit -m "chore: format frontend code with Prettier"
             git push https://${{ secrets.GH_PAT }}@github.com/${{ github.repository }}.git HEAD:${{ github.ref }}
           fi
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "20"
+
+      - name: Generate new coverage report
+        run: node backend/coverage-compare/calculateCoverage.js
+
+      - name: Download old coverage summary if exists
+        uses: actions/download-artifact@v2
+        with:
+          name: coverage-summary-old
+          path: backend/coverage-compare/
+        continue-on-error: true
+
+      - name: Check and compare coverage
+        run: node backend/coverage-compare/checkCoverage.js
+
+      - name: Upload coverage summary as old coverage
+        if: success()
+        uses: actions/upload-artifact@v2
+        with:
+          name: coverage-summary-old
+          path: backend/coverage-compare/coverage-summary.json

@@ -2,7 +2,10 @@ const fs = require('fs');
 const path = require('path');
 
 // Path to the coverage-final.json file
-const coverageFilePath = path.join(__dirname, 'coverage', 'coverage-final.json');
+const coverageFilePath = path.join(__dirname, '../coverage/coverage-final.json');
+
+// Path to the coverage-summary.json file
+const coverageSummaryPath = path.join(__dirname, 'coverage-summary.json');
 
 // Read and parse the coverage JSON file
 fs.readFile(coverageFilePath, 'utf8', (err, data) => {
@@ -26,20 +29,19 @@ fs.readFile(coverageFilePath, 'utf8', (err, data) => {
         if (coverageData.hasOwnProperty(file)) {
             const fileCoverage = coverageData[file];
 
-            // Statements: executable statements, such as variable declarations, assignments, and expressions...
+            // Statements
             totalStatements += Object.keys(fileCoverage.statementMap).length;
             coveredStatements += Object.values(fileCoverage.s).filter(count => count > 0).length;
 
-            // Branches: points in the code where the execution path can diverge, typically due to conditionals (if-else, switch statements...)
+            // Branches
             totalBranches += Object.keys(fileCoverage.branchMap).length;
             coveredBranches += Object.values(fileCoverage.b).flat().filter(count => count > 0).length;
 
-            // Functions: blocks of code that are defined and can be called, including function declarations, expressions, and arrow functions.
+            // Functions
             totalFunctions += Object.keys(fileCoverage.fnMap).length;
             coveredFunctions += Object.values(fileCoverage.f).filter(count => count > 0).length;
 
-            // Lines: the number of lines of code that are covered by tests. 
-            // In the context of coverage reports, this is often equivalent to statements.
+            // Lines
             totalLines += Object.keys(fileCoverage.statementMap).length;
             coveredLines += Object.values(fileCoverage.s).filter(count => count > 0).length;
         }
@@ -51,14 +53,29 @@ fs.readFile(coverageFilePath, 'utf8', (err, data) => {
     const overallFunctionCoverage = (coveredFunctions / totalFunctions) * 100;
     const overallLineCoverage = (coveredLines / totalLines) * 100;
 
-    // console.warn('coveredStatements:', coveredStatements);
-    // console.warn('totalStatements:', totalStatements);
-    // console.warn('coveredBranches:', coveredBranches);
-    // console.warn('totalBranches:', totalBranches);
-    // console.warn('coveredFunctions:', coveredFunctions);
-    // console.warn('totalFunctions:', totalFunctions);
-    // console.warn('coveredLines:', coveredLines);
-    // console.warn('totalLines:', totalLines);
+    const coverageSummary = {
+        overallStatementCoverage: parseFloat(overallStatementCoverage.toFixed(3)),
+        overallBranchCoverage: parseFloat(overallBranchCoverage.toFixed(3)),
+        overallFunctionCoverage: parseFloat(overallFunctionCoverage.toFixed(3)),
+        overallLineCoverage: parseFloat(overallLineCoverage.toFixed(3))
+    };
+
+    // Write the summary to coverage-summary.json
+    fs.writeFile(coverageSummaryPath, JSON.stringify(coverageSummary, null, 2), (err) => {
+        if (err) {
+            console.error('Error writing coverage summary:', err);
+            return;
+        }
+    });
+
+    // console.info('coveredStatements:', coveredStatements);
+    // console.info('totalStatements:', totalStatements);
+    // console.info('coveredBranches:', coveredBranches);
+    // console.info('totalBranches:', totalBranches);
+    // console.info('coveredFunctions:', coveredFunctions);
+    // console.info('totalFunctions:', totalFunctions);
+    // console.info('coveredLines:', coveredLines);
+    // console.info('totalLines:', totalLines);
 
 
     console.log(`Overall statement coverage: ${overallStatementCoverage.toFixed(3)}%`);
