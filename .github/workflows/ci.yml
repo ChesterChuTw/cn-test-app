@@ -77,3 +77,15 @@ jobs:
         with:
           name: coverage-summary-old
           path: ./backend/coverage-compare/coverage-summary.json
+
+      - name: Download old coverage summary if exists
+        uses: actions/download-artifact@v4
+        with:
+          name: coverage-summary-old
+          path: backend/coverage/
+        continue-on-error: true
+
+      - name: Debug
+        run: |
+          ls -al ./backend/coverage/
+          ls -al ./backend/coverage-compare/
