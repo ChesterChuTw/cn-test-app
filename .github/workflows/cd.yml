@@ -33,6 +33,7 @@ jobs:
           tags: ghcr.io/chesterchutw/testing-lab-frontend:${{ github.sha }}
 
   docker_build_backend:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
