@@ -57,6 +57,7 @@ jobs:
           path: backend/coverage-compare/coverage-summary-old.json
 
   auto_format:
+    needs: coverage_check
     name: Auto Format
     runs-on: ubuntu-latest
 
