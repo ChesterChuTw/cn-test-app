@@ -1,0 +1,66 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: testing-lab-frontend-pod
+  labels:
+    app: testing-lab-frontend
+spec:
+  containers:
+    - name: testing-lab-frontend
+      image: ghcr.io/chesterchutw/testing-lab-frontend:latest
+      ports:
+        - containerPort: 5173
+      volumeMounts:
+        - name: config-volume
+          mountPath: /etc/nginx/conf.d/nginx.conf
+          subPath: nginx.conf
+          readOnly: true
+      livenessProbe:
+        httpGet:
+          path: /
+          port: 80
+        initialDelaySeconds: 15
+        periodSeconds: 10
+        timeoutSeconds: 5
+        successThreshold: 1
+        failureThreshold: 3
+      resources:
+        requests:
+          cpu: 10m
+          memory: 10Mi
+        limits:
+          cpu: 200m
+          memory: 200Mi
+  volumes:
+    - name: config-volume
+      configMap:
+        name: nginx-config
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-config
+  namespace: default
+data:
+  nginx.conf: |
+    server {
+        listen 5173;
+
+        location / {
+            root /usr/share/nginx/html;
+            try_files $uri $uri/ /index.html;
+        }
+
+        location /api {
+            proxy_pass http://testing-lab-backend:8888; # docker-compose up
+            # proxy_pass http://localhost:8888; # docker run
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection "upgrade";
+            proxy_set_header Host $host;
+            proxy_cache_bypass $http_upgrade;
+        }
+
+        error_log  /var/log/nginx/vue-app-error.log;
+        access_log /var/log/nginx/vue-app-access.log;
+    }

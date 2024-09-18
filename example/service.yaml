@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: testing-lab-frontend
+spec:
+  type: ClusterIP
+  selector:
+    app: testing-lab-frontend
+  ports:
+    - protocol: TCP
+      port: 5173
+      targetPort: 5173
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: testing-lab-frontend
+spec:
+  type: NodePort # 將類型設置為 NodePort
+  selector:
+    app: testing-lab-frontend
+  ports:
+    - protocol: TCP
+      port: 5173 # ClusterIP 上的內部端口
+      targetPort: 5173 # 轉發到 Pod 的端口
+      nodePort: 30080 # 節點的公開端口，範圍是 30000-32767，若不指定則自動分配
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: testing-lab-frontend
+spec:
+  type: LoadBalancer # 將類型設置為 LoadBalancer
+  selector:
+    app: testing-lab-frontend
+  ports:
+    - protocol: TCP
+      port: 5173 # ClusterIP 上的內部端口
+      targetPort: 5173 # 轉發到 Pod 的端口
+
